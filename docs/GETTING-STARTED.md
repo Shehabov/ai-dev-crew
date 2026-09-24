@@ -26,14 +26,14 @@ which come with node. Kickoff sets the pack up and asks before it installs anyth
 Both routes below end in the same place: a fresh repository that holds the team and none of
 this repository's history.
 
-On GitHub, open [Shehabov/dev-team](https://github.com/Shehabov/dev-team) and choose "Use
+On GitHub, open [Shehabov/ai-dev-crew](https://github.com/Shehabov/ai-dev-crew) and choose "Use
 this template". GitHub creates a new repository from the current files, with no history.
 Clone it and open the folder.
 
 From the command line:
 
 ```bash
-git clone --depth 1 https://github.com/Shehabov/dev-team my-product
+git clone --depth 1 https://github.com/Shehabov/ai-dev-crew my-product
 cd my-product
 rm -rf .git
 git init
@@ -73,8 +73,8 @@ Clone this repository to a temporary folder, then run the installer against your
 with `--dry-run` first:
 
 ```bash
-git clone --depth 1 https://github.com/Shehabov/dev-team /tmp/dev-team
-node /tmp/dev-team/scripts/install.mjs ~/code/my-product --dry-run
+git clone --depth 1 https://github.com/Shehabov/ai-dev-crew /tmp/ai-dev-crew
+node /tmp/ai-dev-crew/scripts/install.mjs ~/code/my-product --dry-run
 ```
 
 Any temporary folder will do. Read what the dry run reports, then run the same command

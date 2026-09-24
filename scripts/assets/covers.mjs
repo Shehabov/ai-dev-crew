@@ -146,9 +146,9 @@ HERO.COLUMN = HERO.MARK_X - HERO.GUTTER - HERO.MARGIN // 680
 
 const HERO_TEXT = {
   label: { text: 'CLAUDE CODE AGENTS', size: 16, tracking: 3 },
-  title: { lines: ['Shehab’s', 'Dev Team'], size: 84, lead: 92, tracking: -1.5 },
+  title: { lines: ['Shehab’s', 'AI Dev Crew'], size: 84, lead: 92, tracking: -1.5 },
   lede: { lines: ['A plug-and-play product team.', 'Sixteen roles. A gate at every handoff.'], size: 24, lead: 36 },
-  address: { text: 'github.com/Shehabov/dev-team', size: 16 },
+  address: { text: 'github.com/Shehabov/ai-dev-crew', size: 16 },
 }
 
 /**
@@ -205,7 +205,7 @@ function hero() {
   return svg({
     w: W,
     h: H,
-    title: "Shehab's Dev Team: a plug-and-play product team of sixteen Claude Code agents, with a gate at every handoff.",
+    title: "Shehab's AI Dev Crew: a plug-and-play product team of sixteen Claude Code agents, with a gate at every handoff.",
     body: body.join('\n'),
   })
 }

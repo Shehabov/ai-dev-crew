@@ -1,6 +1,6 @@
-<p><img src="assets/hero.svg" alt="Shehab's Dev Team: a plug-and-play product team for Claude Code" width="100%"></p>
+<p><img src="assets/hero.svg" alt="Shehab's AI Dev Crew: a plug-and-play product team for Claude Code" width="100%"></p>
 
-Shehab's Dev Team is a plug-and-play product team for Claude Code. Sixteen agents plan,
+Shehab's AI Dev Crew is a plug-and-play product team for Claude Code. Sixteen agents plan,
 design, build, review, test and release your product, and you lead them as the Product Lead.
 Every handoff between two roles passes an independent gate, and every run leaves a ledger on
 disk that proves which roles ran and whether their work was used.
@@ -20,7 +20,7 @@ On GitHub, choose "Use this template" on this repository. Or clone it and start 
 history:
 
 ```bash
-git clone --depth 1 https://github.com/Shehabov/dev-team my-product
+git clone --depth 1 https://github.com/Shehabov/ai-dev-crew my-product
 cd my-product
 rm -rf .git
 git init
@@ -33,9 +33,9 @@ run first. It never overwrites a file of yours without `--force`, and it never r
 `PROJECT.md` or `BUGS.md` at all.
 
 ```bash
-git clone --depth 1 https://github.com/Shehabov/dev-team /tmp/dev-team
-node /tmp/dev-team/scripts/install.mjs <path-to-your-project> --dry-run
-node /tmp/dev-team/scripts/install.mjs <path-to-your-project>
+git clone --depth 1 https://github.com/Shehabov/ai-dev-crew /tmp/ai-dev-crew
+node /tmp/ai-dev-crew/scripts/install.mjs <path-to-your-project> --dry-run
+node /tmp/ai-dev-crew/scripts/install.mjs <path-to-your-project>
 ```
 
 If your project already has a `CLAUDE.md`, the team's manual lands beside it as
