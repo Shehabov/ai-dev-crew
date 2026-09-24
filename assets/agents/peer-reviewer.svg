@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400" role="img" aria-label="Agent 09, peer-reviewer (L3, Review). Reviews judgement, like a senior engineer. Owns the review-judgement gate.">
+<title>Agent 09, peer-reviewer (L3, Review). Reviews judgement, like a senior engineer. Owns the review-judgement gate.</title>
+<rect x="0" y="0" width="640" height="400" rx="28" fill="#021449"/>
+<text x="40" y="53" font-family="'JetBrains Mono', 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace" font-size="18" font-weight="500" fill="#21EA9D">09</text>
+<text x="600" y="53" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end" letter-spacing="1.8" fill="#FFFFFF" fill-opacity="0.56"><tspan>L3</tspan><tspan dx="10">REVIEW</tspan></text>
+<line x1="40" y1="76" x2="600" y2="76" stroke="rgba(255,255,255,0.16)" stroke-width="1"/>
+<g transform="translate(320 184)">
+<g fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"><circle cx="-30" cy="0" r="52"/><circle cx="30" cy="0" r="52"/></g>
+<path d="M 0 -42.47 A 52 52 0 0 1 0 42.47 A 52 52 0 0 1 0 -42.47 Z" fill="#21EA9D"/>
+</g>
+<text x="40" y="316" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="-0.5" fill="#FFFFFF">peer-reviewer</text>
+<text x="40" y="356" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.64)">Reviews judgement, like a senior engineer</text>
+<rect x="425" y="290" width="175" height="28" rx="14" fill="#21EA9D"/>
+<text x="512.5" y="308" font-family="'JetBrains Mono', 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" text-anchor="middle" fill="#021449">review-judgement</text>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400" role="img" aria-label="Agent 06, ux-writer (L3, Design). Writes every string, in every locale. Owns the copy gate.">
+<title>Agent 06, ux-writer (L3, Design). Writes every string, in every locale. Owns the copy gate.</title>
+<rect x="0" y="0" width="640" height="400" rx="28" fill="#021449"/>
+<text x="40" y="53" font-family="'JetBrains Mono', 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace" font-size="18" font-weight="500" fill="#21EA9D">06</text>
+<text x="600" y="53" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end" letter-spacing="1.8" fill="#FFFFFF" fill-opacity="0.56"><tspan>L3</tspan><tspan dx="10">DESIGN</tspan></text>
+<line x1="40" y1="76" x2="600" y2="76" stroke="rgba(255,255,255,0.16)" stroke-width="1"/>
+<g transform="translate(320 184)">
+<g fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"><line x1="-88" y1="32" x2="88" y2="32"/><line x1="-88" y1="-8" x2="88" y2="-8" stroke-dasharray="2 6"/><circle cx="-40" cy="12" r="20"/><line x1="-20" y1="-8" x2="-20" y2="32"/><line x1="0" y1="-48" x2="0" y2="32"/><circle cx="20" cy="12" r="20"/></g>
+<line x1="60" y1="-52" x2="60" y2="44" fill="none" stroke="#21EA9D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="40" y="316" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="-0.5" fill="#FFFFFF">ux-writer</text>
+<text x="40" y="356" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.64)">Writes every string, in every locale</text>
+<rect x="541" y="290" width="59" height="28" rx="14" fill="#21EA9D"/>
+<text x="570.5" y="308" font-family="'JetBrains Mono', 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" text-anchor="middle" fill="#021449">copy</text>
+</svg>

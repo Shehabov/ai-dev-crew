@@ -1,0 +1,45 @@
+{
+  "run": "<yyyy-mm-dd>-<short-slug>",
+  "agent": "<agent-name, matching your file name and your folder>",
+  "stage": "<the stage number of the plan entry this answers, as a number. The first handoff you write in a run is handoff.json. A later plan entry writes handoff-stage<N>.json. A repeat pass at the same stage, such as a fix round or a re-review, writes handoff-stage<N>-round<R>.json. The orchestrator's run-open handoff.json uses 0.>",
+  "status": "<passed, blocked, rejected or escalated. Nothing else.>",
+  "started": "<ISO 8601 UTC, from `date -u +%Y-%m-%dT%H:%M:%SZ`>",
+  "finished": "<ISO 8601 UTC, from the shell, at hand-off>",
+  "consumed": [
+    "<every path you actually read. Listing one you did not read falsifies the record.>"
+  ],
+  "produced": [
+    "<every path you wrote. Each must exist on disk and be non-empty.>"
+  ],
+  "gates": [
+    {
+      "name": "<only a gate you own, by its name in run.json gates[]. Self-checks go in review.md, never here. Delete this entry if you own no gate.>",
+      "result": "<pass or fail>",
+      "evidence": "<the path that proves the result. A pass with no evidence path is unresolved.>"
+    }
+  ],
+  "blockers": [
+    {
+      "what": "<what is wrong or missing, with the round number on a rejection. A missing tool is a blocker, never faked: name the tool and the error.>",
+      "why": "<specifically why it blocks you>",
+      "needs": "<the agent-name that must act, or 'product-lead'>"
+    }
+  ],
+  "missing_inputs": [
+    "<a promised input that never arrived and that you worked around, or a PROJECT.md section that lacks a fact you needed, named as 'PROJECT.md § <section>: <the missing fact>'>"
+  ],
+  "machinery_findings": [
+    "<an agent file, skill, template or script that was ambiguous or wrong, with the file named>"
+  ],
+  "decisions_for_product_lead": [
+    {
+      "question": "<the decision, stated as a choice>",
+      "options": [
+        "<option, and its consequence>",
+        "<option, and its consequence>"
+      ],
+      "recommendation": "<your recommendation, with the reason. Never a bare question.>"
+    }
+  ],
+  "next": "<the agent-name that should run next on a pass, 'orchestrator' on a rejected, blocked or escalated handoff (blockers[].needs names who must act), 'product-lead', or null at run closure>"
+}

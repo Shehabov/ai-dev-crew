@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="Shehab's Dev Team: a plug-and-play product team of sixteen Claude Code agents, with a gate at every handoff.">
+<title>Shehab's Dev Team: a plug-and-play product team of sixteen Claude Code agents, with a gate at every handoff.</title>
+<rect x="0" y="0" width="1280" height="640" rx="28" fill="#021449"/>
+<text x="88" y="144" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" letter-spacing="3" fill="#21EA9D">CLAUDE CODE AGENTS</text>
+<text x="88" y="236" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="84" font-weight="600" letter-spacing="-1.5" fill="#FFFFFF">Shehab’s</text>
+<text x="88" y="328" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="84" font-weight="600" letter-spacing="-1.5" fill="#FFFFFF">Dev Team</text>
+<text x="88" y="393" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.64)">A plug-and-play product team.</text>
+<text x="88" y="429" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.64)">Sixteen roles. A gate at every handoff.</text>
+<text x="88" y="508" font-family="'JetBrains Mono', 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace" font-size="16" fill="#FFFFFF" fill-opacity="0.56">github.com/Shehabov/dev-team</text>
+<g fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.32">
+<rect x="816" y="132" width="76" height="76" rx="12"/>
+<rect x="816" y="232" width="76" height="76" rx="12"/>
+<rect x="816" y="332" width="76" height="76" rx="12"/>
+<rect x="816" y="432" width="76" height="76" rx="12"/>
+<rect x="916" y="432" width="76" height="76" rx="12"/>
+<rect x="916" y="332" width="76" height="76" rx="12"/>
+<rect x="916" y="232" width="76" height="76" rx="12"/>
+<rect x="916" y="132" width="76" height="76" rx="12"/>
+<rect x="1016" y="132" width="76" height="76" rx="12"/>
+<rect x="1016" y="232" width="76" height="76" rx="12"/>
+<rect x="1016" y="332" width="76" height="76" rx="12"/>
+<rect x="1016" y="432" width="76" height="76" rx="12"/>
+<rect x="1116" y="432" width="76" height="76" rx="12"/>
+<rect x="1116" y="332" width="76" height="76" rx="12"/>
+<rect x="1116" y="232" width="76" height="76" rx="12"/>
+</g>
+<path d="M 854 170 L 854 450 A 20 20 0 0 0 874 470 L 934 470 A 20 20 0 0 0 954 450 L 954 190 A 20 20 0 0 1 974 170 L 1034 170 A 20 20 0 0 1 1054 190 L 1054 450 A 20 20 0 0 0 1074 470 L 1134 470 A 20 20 0 0 0 1154 450 L 1154 170" fill="none" stroke="#21EA9D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="1116" y="132" width="76" height="76" rx="12" fill="#21EA9D"/>
+</svg>

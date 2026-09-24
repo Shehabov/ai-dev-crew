@@ -1,0 +1,34 @@
+# Run records. Every run writes its plan, handoffs and evidence here. They stay on the
+# machine that ran them; BUGS.md, the ADRs and the release note carry what matters.
+.devteam/runs/
+
+# Dependencies
+node_modules/
+
+# Environment. Keys never reach the repository. .env.example is the committed template.
+.env
+.env.*
+!.env.example
+
+# Build and test output
+.next/
+next-env.d.ts
+*.tsbuildinfo
+playwright-report/
+test-results/
+coverage/
+build/
+dist/
+*.log
+*.tmp
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*~

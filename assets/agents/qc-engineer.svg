@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400" role="img" aria-label="Agent 14, qc-engineer (L3, Quality). Tests the product and keeps the evidence.">
+<title>Agent 14, qc-engineer (L3, Quality). Tests the product and keeps the evidence.</title>
+<rect x="0" y="0" width="640" height="400" rx="28" fill="#021449"/>
+<text x="40" y="53" font-family="'JetBrains Mono', 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace" font-size="18" font-weight="500" fill="#21EA9D">14</text>
+<text x="600" y="53" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end" letter-spacing="1.8" fill="#FFFFFF" fill-opacity="0.56"><tspan>L3</tspan><tspan dx="10">QUALITY</tspan></text>
+<line x1="40" y1="76" x2="600" y2="76" stroke="rgba(255,255,255,0.16)" stroke-width="1"/>
+<g transform="translate(320 184)">
+<g fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"><rect x="-80" y="-58" width="28" height="28" rx="8"/><rect x="-36" y="-58" width="28" height="28" rx="8"/><rect x="8" y="-58" width="28" height="28" rx="8"/><rect x="52" y="-58" width="28" height="28" rx="8"/><rect x="-80" y="-14" width="28" height="28" rx="8"/><rect x="-36" y="-14" width="28" height="28" rx="8"/><rect x="52" y="-14" width="28" height="28" rx="8"/><rect x="-80" y="30" width="28" height="28" rx="8"/><rect x="-36" y="30" width="28" height="28" rx="8"/><rect x="8" y="30" width="28" height="28" rx="8"/><rect x="52" y="30" width="28" height="28" rx="8"/></g>
+<g><rect x="8" y="-14" width="28" height="28" rx="8" fill="#21EA9D"/><path d="M 16 0.5 L 20.5 5 L 28 -4.5" fill="none" stroke="#021449" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g>
+<text x="40" y="316" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="-0.5" fill="#FFFFFF">qc-engineer</text>
+<text x="40" y="356" font-family="'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.64)">Tests the product and keeps the evidence</text>
+</svg>
