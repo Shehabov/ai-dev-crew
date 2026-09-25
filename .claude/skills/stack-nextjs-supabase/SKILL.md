@@ -487,10 +487,14 @@ grant select on public.invoice_summaries to authenticated;
 ```
 
 A view with `security_invoker = on` checks the caller's own privileges on the table beneath
-it. Over a table whose grants are fully revoked it refuses every caller with `42501`, so
-field exposure is done with column grants, and the view only shapes the read. A view
-without `security_invoker` runs as its owner and skips every policy, which is a trap, not a
-fix.
+it, and the caller needs a grant on every column the view reads. Over a table whose grants
+are fully revoked it refuses every caller with `42501`, so field exposure is done with column
+grants, and the view only shapes the read. That works because the view reads nothing the
+caller cannot. When the view has to transform a column the caller must never read, such as
+redacting free text, column grants cannot help: a grant on that column lets the caller read
+it from the table directly. Route clients through a security-definer function instead, and
+give no client grant on the view. A view without `security_invoker` runs as its owner and
+skips every policy, which is a trap, not a fix.
 
 ### An aggregate that never reports a small group
 
@@ -636,7 +640,7 @@ is a security finding, not a style point.
 | A membership check written as a correlated subquery per row | The same cost as the bare call | `account_id in (select private.my_account_ids())`, a set evaluated once |
 | `security definer` without `set search_path = ''` | A caller can shadow an object and run code as the definer | Pin it on every definer function, with every reference schema-qualified |
 | A view without `security_invoker = on` | Runs as its owner, silently skipping the caller's policies | Set it on every view in an exposed schema |
-| A `security_invoker` view over a fully revoked table | Refuses every caller with `42501`, and gets "fixed" by dropping `security_invoker` | Column grants on the table, then the view |
+| A `security_invoker` view over a fully revoked table | Refuses every caller with `42501`, and gets "fixed" by dropping `security_invoker` | To hide columns: column grants on the table, then the view. To transform a column no client may read: a security-definer function as the only client path, and no client grant on the view |
 | Column grants with `select=*` from the client | `*` expands to every column, including ungranted ones, so the request fails with `42501` | Name the columns, or read through the view |
 | Row level security enabled with no policy | Denies everything, which looks like a bug and gets "fixed" by disabling it | Write the policies in the same migration that enables it |
 | A new table with no `enable row level security` | Supabase's default privileges grant it to `anon` and `authenticated`, so it is open over the API at once | Enable it in the same file that creates the table. No exceptions |
