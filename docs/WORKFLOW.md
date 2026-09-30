@@ -488,12 +488,14 @@ The pre-flight proves the tools are there before any role relies on them.
 | git | `git --version` | The core, always checked |
 | node | `node --version` | The core, always checked |
 | Each tool `PROJECT.md § Toolchain` lists as present | Its version command | The project profile |
+| The Playwright MCP server, when `PROJECT.md § Toolchain` lists it | `claude mcp list`, whose `playwright:` line ends `Connected` when it answers | The team's `.mcp.json` |
 | Whatever the stack pack's pre-flight asks for | As its `SKILL.md` states | The pack in `PROJECT.md § Stack pack`, read by path |
 
 For [stack-nextjs-supabase](../.claude/skills/stack-nextjs-supabase/SKILL.md) that last row is
 `npm --version`, `npx --version`, `npm ls @electric-sql/pglite` at the project root, and one
 `list_tables` call through the Supabase MCP. That one read is the only call the orchestrator
-ever makes through a project's MCP server.
+ever makes through a project's MCP server. `claude mcp list` makes none, and no entry waits on
+the Playwright server, because gate evidence comes from the suite.
 
 | Result | What happens |
 |---|---|

@@ -80,8 +80,9 @@ every S1 and S2, and a concrete fix behind every finding.
 - [team-code-analysis](../../.claude/skills/team-code-analysis/SKILL.md), the defect
   taxonomy, the thresholds, the probe set and the severity ladder.
 
-Tools: everything except Agent, Edit and NotebookEdit, including any MCP server the project
-connects, used only to read and to probe inside transactions that roll back.
+Tools: everything except Agent, Edit, NotebookEdit and the Playwright MCP server
+(`mcp__playwright`), including any other MCP server the project connects, used only to read
+and to probe inside transactions that roll back.
 
 ## Works with
 

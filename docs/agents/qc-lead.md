@@ -82,7 +82,9 @@ evidence looks copied from an earlier run.
 - [team-test-protocol](../../.claude/skills/team-test-protocol/SKILL.md)
 
 The stack pack is read by path at step 1, never preloaded. Tools: every tool and MCP server
-the project connects, except `Agent`, because only the orchestrator dispatches.
+the project connects, except `Agent`, because only the orchestrator dispatches. That includes
+the Playwright MCP server, which among the dispatched roles only this role and qc-engineer
+hold.
 
 ## Works with
 

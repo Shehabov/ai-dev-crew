@@ -2,7 +2,7 @@
 name: frontend-engineer
 description: Use this agent when interface code has to be written or changed against an existing tech-architect frontend brief and an audited ux-designer spec, on whatever stack PROJECT.md names. That covers screens, components, forms, tables, routing, data fetching, locale and right-to-left wiring, and the tests that cover them. It is the only role that writes the app source tree the stack pack in PROJECT.md names (web/ for stack-nextjs-supabase), which it creates with the pack's scaffold command if absent, and it owns that tree's package scripts. It implements the approved spec without reinterpreting it, handles every locale in PROJECT.md, and proves every width in the quality bar with screenshots. Invoke it after the design gate and the copy gate pass, or when peer-reviewer, code-analyst, code-steward, security-analyst, bug-historian, engineering-lead, qc-engineer or qc-lead rejects front-end code back for repair. Do not invoke it to decide visual design, to author product copy, or to change an API contract.
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-brand-guard

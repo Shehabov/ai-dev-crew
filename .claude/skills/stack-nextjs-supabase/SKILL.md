@@ -54,7 +54,9 @@ Every other file cites it rather than restating it.
 
 Present on the machine: git, node, npm, npx, and the Supabase MCP server (`supabase` in
 `.mcp.json`, scoped to one project). `PROJECT.md § Toolchain` records the versions. Nothing
-else may be assumed.
+else may be assumed. The Playwright MCP server (`playwright` in `.mcp.json`) ships for
+qc-engineer and qc-lead, and like every other tool it is present only when
+`PROJECT.md § Toolchain` lists it.
 
 The team never uses Docker, the Supabase CLI, Deno, the Vercel CLI, pnpm, psql, jq or
 python on this stack. None of them is a required step, a gate criterion, an evidence source
@@ -136,9 +138,11 @@ key is never invented while the server is down.
 The orchestrator runs this once, at kickoff, when the Product Lead confirms this pack in
 `PROJECT.md § Stack pack`. Ask before installing anything.
 
-1. The MCP server. Copy `.claude/skills/stack-nextjs-supabase/templates/mcp.json` to
-   `.mcp.json` at the project root, or add its `supabase` entry to an existing `.mcp.json`
-   without removing any other server. Replace `<project-ref>` with the project ref the
+1. The MCP server. Add the `supabase` entry from
+   `.claude/skills/stack-nextjs-supabase/templates/mcp.json` to `mcpServers` in the root
+   `.mcp.json`, beside the team's `playwright` entry where the project kept it. Create the
+   file from the template only when there is none. Never replace the file, and never change
+   or remove another server's entry. Replace `<project-ref>` with the project ref the
    Product Lead gives you: the short id in the project's dashboard URL. The file holds no
    key and no token; the server authenticates through the browser. Tell the Product Lead to
    authorise it with `/mcp`, and that it loads in the next session. The template turns on
@@ -164,7 +168,7 @@ The orchestrator runs this once, at kickoff, when the Product Lead confirms this
    | Section | Default |
    |---|---|
    | § Stack | Front end: Next.js, App Router, TypeScript, in `web/`. Back end: Supabase (PostgREST, database functions, Edge Functions, Auth). Database: Supabase Postgres with row level security on every table. Hosting: not chosen yet |
-   | § Toolchain | Present: git, node, npm, npx, and the Supabase MCP server scoped to one project. Never assumed: Docker, the Supabase CLI, Deno, the Vercel CLI, pnpm, psql, jq, python |
+   | § Toolchain | Present: git, node, npm, npx, the Supabase MCP server scoped to one project, and the Playwright MCP server for qc-engineer and qc-lead. Never assumed: Docker, the Supabase CLI, Deno, the Vercel CLI, pnpm, psql, jq, python |
    | § Release | Target: `deferred: no target chosen` |
 
    And for `§ Commands`:
@@ -231,7 +235,8 @@ supabase/functions/<name>/index.ts       Edge Functions, one folder each
 content/strings/<locale>.json            the shipped string catalogue, written by ux-writer,
                                          one file per locale in PROJECT.md § Locales
 package.json, package-lock.json          the root: private, holds @electric-sql/pglite
-.mcp.json                                the Supabase MCP server, from templates/mcp.json
+.mcp.json                                the MCP servers: the team's playwright, and supabase,
+                                         added from templates/mcp.json
 ```
 
 Migrations are the source of record, and they are hand-authored. There is no declarative

@@ -83,8 +83,9 @@ handoff records the verdict, and the orchestrator routes it.
 - [team-code-review](../../.claude/skills/team-code-review/SKILL.md), the review order, the
   lenses, the failure-mode catalogue, the severity ladder and the verdicts.
 
-Tools: everything except Agent, Edit and NotebookEdit, so it can read, run tests and write its
-own findings, but never edits the code it reviews and never dispatches another agent.
+Tools: everything except Agent, Edit, NotebookEdit and the Playwright MCP server
+(`mcp__playwright`), so it can read, run tests and write its own findings, but never edits the
+code it reviews and never dispatches another agent.
 
 ## Works with
 

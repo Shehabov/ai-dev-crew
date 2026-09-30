@@ -2,7 +2,7 @@
 name: security-analyst
 description: Use this agent on every change, every build and every commit, without exception, and again before any release. It is the data and code security gate, covering exposed keys and credentials in the working tree and in git history, open data endpoints and misconfigured storage, client-side authentication, insecure direct object references and broken access control, injection including SQL, XSS and command injection, insecure client-side storage, sensitive data in URLs and logs, missing security headers, absent CSRF protection and rate limiting, packages that do not exist or imitate a popular name, dependencies with known vulnerabilities, dangerous functions such as eval, missing error handling, and absent or unfiltered logging. It works the full catalogue in team-security, runs the dependency audit of the stack's package manager, and probes access control as each role with the tools the stack pack provides, and it requires every critical and high finding to be fixed or accepted in writing by the Product Lead. It runs at stage 6 independently of peer-reviewer, code-analyst and code-steward, reads none of their findings first, writes only under the run folder, never edits code, and blocks on its own authority.
 model: inherit
-disallowedTools: Agent, Edit, NotebookEdit
+disallowedTools: Agent, Edit, NotebookEdit, mcp__playwright
 skills:
   - team-protocol
   - team-security

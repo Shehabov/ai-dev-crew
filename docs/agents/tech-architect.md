@@ -88,7 +88,8 @@ which dispatches the builders.
   never makes a brand rule impossible to obey.
 
 Tools: every tool and MCP server the project connects, except `Agent`, because only the
-orchestrator dispatches.
+orchestrator dispatches, and the Playwright MCP server (`mcp__playwright`), which among the
+dispatched roles only qc-engineer and qc-lead hold.
 
 ## Works with
 

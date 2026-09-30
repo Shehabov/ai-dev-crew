@@ -16,6 +16,8 @@ next-env.d.ts
 *.tsbuildinfo
 playwright-report/
 test-results/
+# Unnamed captures from the Playwright MCP server. They can carry tokens and response bodies.
+.playwright-mcp/
 coverage/
 build/
 dist/

@@ -16,10 +16,15 @@
  *   - .claude/settings.json: when the target already has its own, the team's settings are
  *     written as .claude/settings.devteam.json, and what to merge is printed. The target's
  *     own settings file is never modified, because it holds its permission rules.
+ *   - .mcp.json: copied when absent. When the target already has its own, it is never
+ *     modified, even with --force, because it holds the project's own servers. The team's
+ *     servers are compared with it by name. When one is missing, or declared differently,
+ *     the team's file is written as .mcp.devteam.json and what to merge is printed.
  *   - LICENSE: copied as LICENSE-devteam when absent and never replaced, even with --force.
  *     The MIT licence asks that its notice travel with the files it covers. The project's
  *     own LICENSE is never read or touched.
- *   - .gitignore: `.devteam/runs/` is appended when no line already covers it.
+ *   - .gitignore: `.devteam/runs/` and `.playwright-mcp/` are each appended when no line
+ *     already covers it.
  *
  * A source file or folder missing from this checkout is reported and skipped, so a partial
  * checkout still installs what it has.
@@ -38,8 +43,8 @@ const USAGE = `Usage: node scripts/install.mjs <target-dir> [--dry-run] [--force
   <target-dir>  an existing project folder to install the team into
   --dry-run     report what would happen and write nothing
   --force       replace team files that differ from this checkout's copy
-                (never PROJECT.md, BUGS.md, LICENSE-devteam or the target's own
-                settings.json)`
+                (never PROJECT.md, BUGS.md, LICENSE-devteam, or the target's own
+                settings.json or .mcp.json)`
 
 /** Team files: copied when absent, replaced only with --force. */
 const TEAM_ITEMS = [
@@ -65,6 +70,14 @@ const PROJECT_ITEMS = [
 
 const RUNS_LINE = '.devteam/runs/'
 const RUNS_COVERED = new Set(['.devteam/runs/', '.devteam/runs', '/.devteam/runs/', '/.devteam/runs', '.devteam/', '.devteam', '/.devteam/', '/.devteam'])
+const CAPTURES_LINE = '.playwright-mcp/'
+const CAPTURES_COVERED = new Set(['.playwright-mcp/', '.playwright-mcp', '/.playwright-mcp/', '/.playwright-mcp'])
+
+/** The lines the team needs in the target's .gitignore, each with the comment written above it. */
+const IGNORES = [
+  { line: RUNS_LINE, covered: RUNS_COVERED, comment: '# Run records from the dev team' },
+  { line: CAPTURES_LINE, covered: CAPTURES_COVERED, comment: '# Unnamed captures from the Playwright MCP server' },
+]
 
 // ---------------------------------------------------------------------------------------
 // Arguments
@@ -298,25 +311,93 @@ function mergeAdvice(oursPath, theirsPath) {
   if (loosened.length) {
     lines.push(`review "permissions.allow": it allows ${loosened.join(', ')}, which the team asks about or denies`)
   }
+  const enabled = new Set(Array.isArray(theirs.enabledMcpjsonServers) ? theirs.enabledMcpjsonServers : [])
+  const enable = (ours.enabledMcpjsonServers || []).filter((name) => !enabled.has(name))
+  if (enable.length) {
+    lines.push(`add ${enable.map((n) => `"${n}"`).join(', ')} to "enabledMcpjsonServers", which approves the team's MCP server once the folder is trusted`)
+  }
   return { agentMerged, lines }
 }
 
-// The .gitignore line.
-const gitignore = join(TARGET, '.gitignore')
-if (existsSync(gitignore)) {
-  const text = readFileSync(gitignore, 'utf8')
-  const covered = text.split(/\r?\n/).some((l) => RUNS_COVERED.has(l.trim()))
-  if (covered) {
-    rows.push({ label: '.gitignore', detail: `${RUNS_LINE} already ignored`, plain: true })
-  } else {
-    const eol = text.includes('\r\n') ? '\r\n' : '\n'
-    const lead = text.length && !text.endsWith('\n') ? eol : ''
-    write(gitignore, `${text}${lead}${eol}# Run records from the dev team${eol}${RUNS_LINE}${eol}`)
-    rows.push({ label: '.gitignore', detail: `${RUNS_LINE} ${DRY ? 'would be appended' : 'appended'}`, plain: true })
-  }
+// The MCP servers.
+const mcpSrc = join(SOURCE, '.mcp.json')
+if (!existsSync(mcpSrc)) {
+  missing.push('.mcp.json')
+  rows.push({ label: 'MCP servers', missing: true })
 } else {
-  write(gitignore, `# Run records from the dev team\n${RUNS_LINE}\n`)
-  rows.push({ label: '.gitignore', detail: `${DRY ? 'would be created' : 'created'} with ${RUNS_LINE}`, plain: true })
+  const own = join(TARGET, '.mcp.json')
+  if (!existsSync(own) || sameBytes(mcpSrc, own)) {
+    record('MCP servers', [place(mcpSrc, own)], '.mcp.json')
+  } else {
+    // The project's own file is never written. Only what it lacks, or declares differently,
+    // is reported, with the team's file beside it to copy from.
+    const advice = mcpAdvice(mcpSrc, own)
+    if (!advice.length) {
+      rows.push({ label: 'MCP servers', detail: '.mcp.json already declares the team\'s servers as the team does, left as it is', plain: true })
+    } else {
+      const alt = join(TARGET, '.mcp.devteam.json')
+      const r = place(mcpSrc, alt)
+      if (r === 'differs') differing.push('.mcp.devteam.json')
+      record('MCP servers', [r], '.mcp.devteam.json, beside the project\'s own .mcp.json')
+      notes.push([
+        'The project already has .mcp.json, which is left as it is. The team\'s MCP servers are',
+        'in .mcp.devteam.json. To merge them into .mcp.json:',
+        '',
+        ...advice.map((l) => `  - ${l}`),
+      ])
+    }
+  }
+}
+
+/** How a server entry starts: its URL, or its command and arguments. */
+function launch(entry) {
+  if (!entry || typeof entry !== 'object') return JSON.stringify(entry)
+  if (typeof entry.url === 'string') return entry.url
+  return [entry.command, ...(Array.isArray(entry.args) ? entry.args : [])].join(' ')
+}
+
+/** The team's servers that a project's own .mcp.json lacks, or starts another way. */
+function mcpAdvice(oursPath, theirsPath) {
+  const ours = JSON.parse(readFileSync(oursPath, 'utf8')).mcpServers || {}
+  let theirs
+  try {
+    theirs = JSON.parse(readFileSync(theirsPath, 'utf8'))
+  } catch {
+    return ['.mcp.json is not valid JSON, so compare it with .mcp.devteam.json by hand.']
+  }
+  const servers = theirs && typeof theirs.mcpServers === 'object' && theirs.mcpServers ? theirs.mcpServers : {}
+  const lines = []
+  for (const [name, entry] of Object.entries(ours)) {
+    if (!(name in servers)) {
+      lines.push(`add the "${name}" entry under "mcpServers", beside the servers already there`)
+    } else if (launch(servers[name]) !== launch(entry)) {
+      lines.push(`the "${name}" entry starts ${launch(servers[name])}, and the team's starts ${launch(entry)}. The team pins its version and its arguments, so decide which to keep`)
+    }
+  }
+  return lines
+}
+
+// The .gitignore lines.
+const gitignore = join(TARGET, '.gitignore')
+const ignoreText = existsSync(gitignore) ? readFileSync(gitignore, 'utf8') : null
+const ignored = new Set(ignoreText === null ? [] : ignoreText.split(/\r?\n/).map((l) => l.trim()))
+const needed = IGNORES.filter((i) => ![...i.covered].some((l) => ignored.has(l)))
+const present = IGNORES.filter((i) => !needed.includes(i))
+const listed = (items) => items.map((i) => i.line).join(' and ')
+if (!needed.length) {
+  rows.push({ label: '.gitignore', detail: `${listed(present)} already ignored`, plain: true })
+} else {
+  const eol = ignoreText !== null && ignoreText.includes('\r\n') ? '\r\n' : '\n'
+  const block = needed.map((i) => `${i.comment}${eol}${i.line}${eol}`).join(eol)
+  if (ignoreText === null) {
+    write(gitignore, block)
+    rows.push({ label: '.gitignore', detail: `${DRY ? 'would be created' : 'created'} with ${listed(needed)}`, plain: true })
+  } else {
+    const lead = ignoreText.length && !ignoreText.endsWith('\n') ? eol : ''
+    write(gitignore, `${ignoreText}${lead}${eol}${block}`)
+    const also = present.length ? `; ${listed(present)} already ignored` : ''
+    rows.push({ label: '.gitignore', detail: `${listed(needed)} ${DRY ? 'would be appended' : 'appended'}${also}`, plain: true })
+  }
 }
 
 // ---------------------------------------------------------------------------------------
@@ -328,7 +409,7 @@ const verb = DRY
 
 console.log(`Installing the team into ${TARGET}`)
 if (DRY) console.log('Dry run: nothing is written.')
-if (FORCE) console.log('--force: team files that differ are replaced. PROJECT.md, BUGS.md, LICENSE-devteam and settings.json are not.')
+if (FORCE) console.log('--force: team files that differ are replaced. PROJECT.md, BUGS.md, LICENSE-devteam, settings.json and .mcp.json are not.')
 console.log('')
 
 const width = Math.max(...rows.map((r) => r.label.length)) + 2

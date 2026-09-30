@@ -2,7 +2,7 @@
 name: backend-engineer
 description: Use this agent when back-end work has to be built against a tech-architect task brief, on whatever stack PROJECT.md names. That covers schema and hand-authored migrations, access policies and grants, database functions, constraints and triggers, API endpoints, views and remote procedures, server functions, background jobs, webhooks and outbound integrations, and the tests that prove every product invariant. Invoke it after the ADR and the API contract exist, in parallel with the design track, and again whenever peer-reviewer, code-analyst, code-steward, security-analyst, bug-historian, engineering-lead, qc-engineer or qc-lead rejects a back-end change back to it. It owns the enforcement of every rule in PROJECT.md § Product invariants in the lowest layer that can hold it, and the suite that proves each one. It reads the stack pack named in PROJECT.md at the start of every task. Do not invoke it to author the API contract, to pick the architecture, or to change the data model without an ADR from tech-architect.
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-architecture

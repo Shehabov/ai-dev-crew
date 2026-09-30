@@ -150,8 +150,14 @@ orchestrator runs `node .devteam/bin/sync-gates.mjs <run-dir>` and then
 ## Toolchain
 
 The team itself needs git and node. Everything else is what `PROJECT.md § Toolchain` says
-is present, and nothing beyond it is assumed. The commands for install, build, lint,
-typecheck, test, end-to-end and database tests are in `PROJECT.md § Commands`.
+is present, and nothing beyond it is assumed. The Playwright MCP server (`playwright` in
+`.mcp.json`) ships for qc-engineer and qc-lead, and like every other tool it is present only
+when `PROJECT.md § Toolchain` lists it. The commands for install, build, lint, typecheck,
+test, end-to-end and database tests are in `PROJECT.md § Commands`.
+
+How qc-engineer and qc-lead use the Playwright server, beside the end-to-end suite, is in
+[`team-test-protocol`](./.claude/skills/team-test-protocol/SKILL.md) (Automation with
+Playwright).
 
 Stack-dependent roles read the stack pack named in `PROJECT.md § Stack pack` by path, at
 `.claude/skills/<pack>/SKILL.md`, at step 1. With `none`, they work from `§ Stack` and
@@ -237,8 +243,9 @@ spec disagree, the brand spec wins and the override is recorded.
 - Kickoff comes first. While `PROJECT.md` still carries a `TODO:` marker, the orchestrator
   opens no run. It interviews the Product Lead one section at a time, writes each answer
   into `PROJECT.md`, and sets up the stack pack if one is named (for
-  `stack-nextjs-supabase`, the `.mcp.json` from the pack's template with a project ref,
-  after which the Product Lead authorises the server with `/mcp`).
+  `stack-nextjs-supabase`, the pack's `supabase` entry added to `.mcp.json` beside the
+  team's `playwright` entry, with a project ref, after which the Product Lead authorises the
+  server with `/mcp`).
 - Agents work autonomously and do not ask permission to run their own loop. They ask only
   for decisions that belong to the Product Lead.
 - A small, self-contained change may go straight to the responsible role, but the

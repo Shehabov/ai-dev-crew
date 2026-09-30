@@ -95,7 +95,9 @@ same shape:
   appears in a probe.
 - Screen probes use Playwright through `npx playwright` (`npx playwright install chromium`
   once), or the capture tool `§ Toolchain` names, at the real width, theme and locale, from
-  the widths in `PROJECT.md § Quality bar`.
+  the widths in `PROJECT.md § Quality bar`. They start in the Playwright MCP server, which you
+  and qc-engineer hold and no other dispatched role does, when `§ Toolchain` lists it, as the
+  section below says.
 - Contrast is computed as WCAG ratios from the brand spec's hex values in a node script, once
   the computed style confirms the rendered element uses those values. Never estimated. The
   brand spec lives at the path in `PROJECT.md § Brand`.
@@ -104,6 +106,28 @@ If a tool the stack pack requires does not answer (its tools are missing, or a c
 auth error), you do not fake it. Run the offline proof, set `status` to `blocked` with the tool
 and the error in `blockers`, using the reason the stack pack names, and the orchestrator
 escalates to the Product Lead.
+
+### Playwright: the MCP finds, the suite proves
+
+`team-test-protocol` (Automation with Playwright) is the source for the projects, the output
+paths, the session rules and the division of work. This is how it applies to you.
+
+- **Your screen probes start in the MCP**: the exploratory part of your independent pass,
+  reproducing a defect someone reported, and live capture while you investigate. Every capture
+  you keep is named and saved under `evidence/qc-lead/mcp/`, with the session written down
+  beside it.
+- **What you certify comes from the suite.** A screen probe that reads as passed in
+  `readiness.md` points at a suite run: qc-engineer's pass directory, or a targeted run of the
+  cases in question in `evidence/qc-lead/e2e/<pass>/`. A targeted run is not a re-run of the
+  suite end to end. A probe that finds something no suite case covers is untested surface, and
+  a finding for the role that owns the suite, with the exact case to add.
+- **In the evidence audit**, screen evidence is a suite pass: a `run.log` ending in its exit
+  line, `results.json` counts that reconcile with the log, a trace per case, and one directory
+  per pass, so the failing run is still on disk beside the passing one. An MCP capture offered
+  as gate evidence is a rejection to qc-engineer.
+- **When the MCP does not answer**, run what can still run through the suite and
+  `npx playwright`, and hand off `blocked` as the protocol's When the MCP does not answer says,
+  naming each planned probe that needed the MCP.
 
 ## Your operating loop
 

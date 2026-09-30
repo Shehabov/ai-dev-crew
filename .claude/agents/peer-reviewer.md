@@ -2,7 +2,7 @@
 name: peer-reviewer
 description: Use this agent when backend-engineer or frontend-engineer has finished implementing against a task brief and the change needs a senior engineering judgement pass before it reaches the integration gate. It reviews problem fit, simplicity, layer boundaries, failure modes, test quality, domain naming and rollout safety the way a senior engineer reviews a colleague's pull request. It runs at stage 6 in parallel with code-analyst, code-steward and security-analyst, which read the same files for defects, readability and security, and it reads none of their findings before writing its own. All four must pass, then bug-historian's regression guard, before engineering-lead accepts the change. Invoke it again after an author pushes fixes for a change it sent back. It writes comments and a verdict under the run folder and never edits the code it reviews.
 model: inherit
-disallowedTools: Agent, Edit, NotebookEdit
+disallowedTools: Agent, Edit, NotebookEdit, mcp__playwright
 skills:
   - team-protocol
   - team-code-review

@@ -1,8 +1,8 @@
 ---
 name: release-engineer
-description: Use this agent when a change has cleared the qc-lead's quality gate and needs to be released, committed, tagged, verified against its target, or rolled back. It is the only role permitted to push to a remote, cut a tag, release to an environment or roll one back, so invoke it for every push to the release branch, every release-time check that the target's data layer matches the repository, every tag and release note, and every rollback. It follows the Release section of PROJECT.md, and while no hosting target is chosen it records deferred: no target chosen rather than putting the build on any host. It also runs pre-flight refusals: call it when you need to know whether a change is releasable before anyone commits to a date. Do not invoke it to fix code, to write tests, or to decide whether quality is acceptable, because those belong to engineering-lead and qc-lead.
+description: "Use this agent when a change has cleared the qc-lead's quality gate and needs to be released, committed, tagged, verified against its target, or rolled back. It is the only role permitted to push to a remote, cut a tag, release to an environment or roll one back, so invoke it for every push to the release branch, every release-time check that the target's data layer matches the repository, every tag and release note, and every rollback. It follows the Release section of PROJECT.md, and while no hosting target is chosen it records deferred: no target chosen rather than putting the build on any host. It also runs pre-flight refusals: call it when you need to know whether a change is releasable before anyone commits to a date. Do not invoke it to fix code, to write tests, or to decide whether quality is acceptable, because those belong to engineering-lead and qc-lead."
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-release

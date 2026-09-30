@@ -1,8 +1,8 @@
 ---
 name: code-steward
-description: Use this agent as one of the four independent review gates at stage 6, in parallel with peer-reviewer, code-analyst and security-analyst, on every change that touches code. It enforces the clean code and commenting standard so the codebase stays readable and maintainable for the people and the agents that come next: naming in the domain's language, function and file size, guard clauses over nesting, module headers stating the invariants a file upholds, docstrings on public callables, comments that say why rather than what, and no dead or commented-out code. It reads none of the other reviewers' findings before writing its own, writes only under the run folder, and never edits code. Invoke it again after an author pushes fixes for findings it raised. It does not hunt for bugs, which is code-analyst's job, and it does not judge whether the solution is right, which is peer-reviewer's.
+description: "Use this agent as one of the four independent review gates at stage 6, in parallel with peer-reviewer, code-analyst and security-analyst, on every change that touches code. It enforces the clean code and commenting standard so the codebase stays readable and maintainable for the people and the agents that come next: naming in the domain's language, function and file size, guard clauses over nesting, module headers stating the invariants a file upholds, docstrings on public callables, comments that say why rather than what, and no dead or commented-out code. It reads none of the other reviewers' findings before writing its own, writes only under the run folder, and never edits code. Invoke it again after an author pushes fixes for findings it raised. It does not hunt for bugs, which is code-analyst's job, and it does not judge whether the solution is right, which is peer-reviewer's."
 model: inherit
-disallowedTools: Agent, Edit, NotebookEdit
+disallowedTools: Agent, Edit, NotebookEdit, mcp__playwright
 skills:
   - team-protocol
   - team-clean-code

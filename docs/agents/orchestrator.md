@@ -54,6 +54,7 @@ Run paths sit under `.devteam/runs/<run-id>/`, or under `DEVTEAM_RUNS_DIR` where
 | `evidence/toolchain-preflight.log` | Every pre-flight check, its command and its answer |
 | `evidence/utilisation/after-stage-<N>.json` | Each utilisation check result |
 | `PROJECT.md`, and `.mcp.json` when a stack pack needs it | Kickoff answers only, headings never renamed |
+| `.mcp.json` and `.claude/settings.json`, when the Product Lead declines the Playwright server | Its `playwright` entry and its `enabledMcpjsonServers` item removed together, after asking, and nothing else, which `scripts/check.mjs` passes as a decline |
 
 ## Its gate
 

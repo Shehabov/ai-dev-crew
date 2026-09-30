@@ -15,7 +15,8 @@
  *   6. Residue       nothing carried over from the private source this team came from
  *   7. Art           every SVG under assets/ is safe to render through <img>
  *   8. Syntax        node --check on every script
- *   9. Inventory     every file the repository layout promises
+ *   9. Inventory     every file the repository layout promises, and the shipped Playwright
+ *                    MCP server's pin, launch arguments, permission rules and ignore line
  *
  * It reads and never writes: a checker that repairs what it checks always reports clean, so
  * its report proves nothing. Exit code 0 when every group is clean, 1 on any failure.
@@ -60,6 +61,18 @@ const DIAGRAMS = ['flow', 'loop', 'gates', 'roster', 'security']
 /** The four reviewers write findings under the run folder and never edit the code they read. */
 const REVIEWERS = new Set(['peer-reviewer', 'code-analyst', 'code-steward', 'security-analyst'])
 
+/** The only dispatched roles that hold the shipped Playwright MCP server. Every other one disallows it. */
+const BROWSER_TESTERS = new Set(['qc-engineer', 'qc-lead'])
+
+/** The permission rules the shipped Playwright MCP server depends on, each with its reason. */
+const PLAYWRIGHT_RULES = [
+  ['deny', 'mcp__playwright__browser_run_code_unsafe', 'it runs arbitrary code in the server\'s own process'],
+  ['deny', 'Read(~/.claude/.credentials.json)', 'it holds the Claude Code sign-in and MCP OAuth tokens, and a page the browser reads can ask for them'],
+  ['ask', 'mcp__playwright__browser_file_upload', 'it can hand any file in the project to a page'],
+  ['ask', 'mcp__playwright__browser_drop', 'it can hand any file in the project to a page'],
+  ['ask', 'Edit(.devteam/bin/**)', 'the scripts there run without a prompt'],
+]
+
 /** The two files that carry the run plan template, which must stay byte-identical. */
 const RUN_PLAN_FILES = ['.claude/agents/orchestrator.md', '.claude/skills/team-orchestration/SKILL.md']
 
@@ -96,6 +109,7 @@ const LAYOUT = [
   'SECURITY.md',
   'LICENSE',
   '.gitignore',
+  '.mcp.json',
 ]
 
 /** Hype and filler, banned as whole words in any case. */
@@ -417,6 +431,11 @@ group('Agents', (fail) => {
           if (!disallowed.includes(tool)) fail(file, `disallowedTools must include ${tool}, because a reviewer never edits the code it reviews`)
         }
       }
+      if (BROWSER_TESTERS.has(stem)) {
+        if (disallowed.includes('mcp__playwright')) fail(file, 'disallowedTools must not include mcp__playwright, because this role tests in a browser through the Playwright MCP server')
+      } else if (!disallowed.includes('mcp__playwright')) {
+        fail(file, 'disallowedTools must include mcp__playwright, because qc-engineer and qc-lead are the only dispatched roles that hold the Playwright MCP server')
+      }
     }
   }
 })
@@ -715,6 +734,44 @@ group('Inventory', (fail) => {
   for (const path of LAYOUT) if (!exists(path)) fail(path, 'is missing')
   if (exists('package.json')) fail('package.json', 'there is no root package.json. The team needs only git and node.')
   if (exists('.gitignore') && !/^\/?\.devteam\/(?:runs\/?)?\r?$/m.test(read('.gitignore'))) fail('.gitignore', 'does not ignore .devteam/runs/')
+
+  // The shipped Playwright MCP server: pinned, WebMCP off, approved, and its rules in place.
+  // A product that declines it at kickoff removes its .mcp.json entry and its approval,
+  // and nothing else, so the checks on the server itself apply while it is declared. The
+  // entry and the approval go together, and the permission rules and the ignore line hold
+  // in every state.
+  if (exists('.gitignore') && !/^\/?\.playwright-mcp\/?\r?$/m.test(read('.gitignore'))) fail('.gitignore', 'does not ignore .playwright-mcp/, where the Playwright MCP server writes unnamed captures')
+  const parsed = (path) => {
+    if (!exists(path)) return null
+    try {
+      return JSON.parse(read(path))
+    } catch (err) {
+      fail(path, `is not valid JSON: ${err.message}`)
+      return null
+    }
+  }
+  const mcp = parsed('.mcp.json')
+  const server = mcp && mcp.mcpServers && mcp.mcpServers.playwright
+  if (server) {
+    const args = Array.isArray(server.args) ? server.args : []
+    const pkg = args.find((a) => typeof a === 'string' && a.startsWith('@playwright/mcp'))
+    if (!pkg || !/^@playwright\/mcp@\d+\.\d+\.\d+$/.test(pkg)) fail('.mcp.json', `the playwright server must be pinned to an exact version, @playwright/mcp@<major>.<minor>.<patch>, and it starts ${pkg ?? 'no @playwright/mcp package'}`)
+    if (!args.includes('--no-webmcp')) fail('.mcp.json', 'the playwright server must be launched with --no-webmcp, so a page cannot add tools to the session')
+  }
+  const settings = parsed('.claude/settings.json')
+  if (settings) {
+    const perms = settings.permissions || {}
+    for (const [kind, rule, why] of PLAYWRIGHT_RULES) {
+      if (!(Array.isArray(perms[kind]) && perms[kind].includes(rule))) fail('.claude/settings.json', `permissions.${kind} must include ${rule}, because ${why}`)
+    }
+    const approved = Array.isArray(settings.enabledMcpjsonServers) && settings.enabledMcpjsonServers.includes('playwright')
+    if (server && !approved) {
+      fail('.claude/settings.json', 'enabledMcpjsonServers must include playwright, which approves the shipped server once the folder is trusted')
+    }
+    if (mcp && !server && approved) {
+      fail('.mcp.json', 'does not declare the playwright server under mcpServers, and .claude/settings.json still approves it in enabledMcpjsonServers. Declining the server at kickoff removes both, and keeping it keeps both')
+    }
+  }
 })
 
 // ---------------------------------------------------------------------------------------

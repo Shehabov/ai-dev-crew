@@ -96,8 +96,9 @@ The same catalogue, written for people, is the [security checklist](../SECURITY-
 With the default stack pack, `supabase-postgres-best-practices` is an optional companion, if
 installed (see [SKILLS.md](../SKILLS.md)).
 
-Tools: everything except Agent, Edit and NotebookEdit, including any MCP server the project
-connects, used only to read and to probe, never to change.
+Tools: everything except Agent, Edit, NotebookEdit and the Playwright MCP server
+(`mcp__playwright`), including any other MCP server the project connects, used only to read
+and to probe, never to change.
 
 ## Works with
 

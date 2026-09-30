@@ -70,7 +70,15 @@ orchestrator interviews the Product Lead before anything else.
 2. Ask about one section at a time. Say in one line what the section is for and which roles
    read it. Where the section ships a default (the widths and WCAG 2.2 AA in Quality bar,
    `deferred: no target chosen` in Release, no attribution in House rules, `BRAND.md` in
-   Brand), offer it and ask the Product Lead to confirm or change it.
+   Brand), offer it and ask the Product Lead to confirm or change it. In Toolchain, say that
+   the root `.mcp.json` declares the Playwright MCP server for qc-engineer and qc-lead, and ask
+   whether the project keeps it. On a yes, list it as present. On a no, ask before removing
+   its entry from `.mcp.json` and `playwright` from `enabledMcpjsonServers` in
+   `.claude/settings.json`, and leave it out of the section. Remove the two together and
+   change nothing else, the permission rules and the `.playwright-mcp/` line in `.gitignore`
+   included: `scripts/check.mjs` reads both gone as a decline and passes it, fails on one
+   without the other, and still requires the five permission rules the server depends on,
+   and that line.
 3. Write the answer into that section in place of the marker, then read it back. Never
    rename, reorder or merge a heading, because every agent finds its facts by heading. `none`
    is a valid answer in Commands and Stack pack. A section is never filled with a guess.
@@ -81,12 +89,13 @@ orchestrator interviews the Product Lead before anything else.
    matches the Stack section, or `none`. Where a pack is chosen, offer its command set as the
    default for Commands.
 6. When a pack is named, run the setup section of its `SKILL.md`. For
-   `stack-nextjs-supabase` that is its Kickoff setup: copy
-   `.claude/skills/stack-nextjs-supabase/templates/mcp.json` to `.mcp.json` at the project
-   root (or add its server entry to an existing `.mcp.json` without removing any other
-   server), replace `<project-ref>` with the ref the Product Lead gives, and put no key or
-   token in the file. Then tell the Product Lead to authorise the server with `/mcp`, and that
-   it loads in the next session. Ask before installing anything a setup section lists.
+   `stack-nextjs-supabase` that is its Kickoff setup: add the `supabase` entry from
+   `.claude/skills/stack-nextjs-supabase/templates/mcp.json` to the root `.mcp.json`, beside
+   the team's `playwright` entry, creating the file from the template only when there is
+   none and never replacing it or changing another server's entry, replace `<project-ref>`
+   with the ref the Product Lead gives, and put no key or token in the file. Then tell the
+   Product Lead to authorise the server with `/mcp`, and that it loads in the next session.
+   Ask before installing anything a setup section lists.
 7. Search for `TODO:` once more. Open the run only when none remain outside the worked
    example.
 
@@ -103,12 +112,15 @@ Run it after the `run opened` line and before the first dispatch.
 | git | `git --version` | The core. Always checked. |
 | node | `node --version` | The core. Always checked. |
 | Every tool `PROJECT.md § Toolchain` lists as present | Its version command | The project profile |
+| The Playwright MCP server, when `PROJECT.md § Toolchain` lists it | `claude mcp list`, from the project root. It answers when its `playwright:` line ends `Connected`. `Pending approval`, `Failed` or no line at all is a server that does not answer | The team's `.mcp.json` |
 | Whatever the stack pack's pre-flight asks for | As its `SKILL.md` states | The pack named in `PROJECT.md § Stack pack`, read by path at `.claude/skills/<pack>/SKILL.md` |
 
 For `stack-nextjs-supabase`, the section is Pre-flight at run open: `npm --version`,
 `npx --version`, `npm ls @electric-sql/pglite` at the project root, and one `list_tables`
 call through the Supabase MCP. That one read is the only call the orchestrator ever makes
 through a project's MCP server. It never applies, queries or changes anything through one.
+`claude mcp list` makes no call through a server: it asks Claude Code whether each server
+starts. The orchestrator never calls a Playwright tool.
 
 Write every check to `evidence/toolchain-preflight.log`, one line each, with the shell
 timestamp, the command or call, and the answer or the exact error:
@@ -121,6 +133,7 @@ timestamp, the command or call, and the answer or the exact error:
 2026-10-01T08:03:06Z  npx --version                  11.3.0        stack pack
 2026-10-01T08:03:08Z  npm ls @electric-sql/pglite    (empty)       stack pack: offline proof unavailable
 2026-10-01T08:03:09Z  list_tables (supabase MCP)     auth error    supabase MCP not authorised
+2026-10-01T08:03:12Z  claude mcp list                playwright: Connected
 ```
 
 | Result | Do this |
@@ -132,8 +145,11 @@ timestamp, the command or call, and the answer or the exact error:
 | An MCP server does not answer (its tools are missing, or the call returns an auth error) | Record `<server> MCP not authorised` in the ledger and in the stage 0 handoff's `blockers`, with `needs` set to `product-lead`, who authorises it with `/mcp`. Dispatch no entry that needs the server until a re-run answers. Still dispatch every entry that does not. |
 
 Decide at planning time which plan entries need which server, and write that list in
-`orchestrator/plan.md`. The stack pack names them for its own server. An agent that finds a
-server missing mid-run runs whatever offline proof its stack pack defines and hands off
+`orchestrator/plan.md`. The stack pack names them for its own server. No entry needs the
+Playwright MCP server to pass, because gate evidence comes from the suite, so a Playwright
+server that does not answer is escalated and holds nothing, and qc-engineer and qc-lead name
+the cases that needed it (`team-test-protocol`, When the MCP does not answer). An agent that
+finds a server missing mid-run runs whatever offline proof its stack pack defines and hands off
 `blocked` with the same reason, and it routes to the Product Lead the same way. A missing tool
 is reported as blocked, never faked, and a result is never accepted in place of a tool that
 did not run.
@@ -569,8 +585,8 @@ An example, from the middle of a run:
 
 ```markdown
 | 2026-10-01T08:02:11Z | run opened | orchestrator | invoice export as CSV · 18 plan entries across 15 agents · 12 gates · ships true |
-| 2026-10-01T08:02:12Z | kickoff | orchestrator | filled Product, Locales, Product invariants · stack pack setup: .mcp.json written, /mcp asked of the Product Lead |
-| 2026-10-01T08:03:09Z | toolchain pre-flight | orchestrator | git, node, npm, npx answered · supabase MCP not authorised · evidence/toolchain-preflight.log |
+| 2026-10-01T08:02:12Z | kickoff | orchestrator | filled Product, Locales, Product invariants · stack pack setup: supabase entry added to .mcp.json, /mcp asked of the Product Lead |
+| 2026-10-01T08:03:12Z | toolchain pre-flight | orchestrator | git, node, npm, npx and the Playwright MCP server answered · supabase MCP not authorised · evidence/toolchain-preflight.log |
 | 2026-10-01T08:03:40Z | escalation | orchestrator | supabase MCP not authorised, from orchestrator/handoff.json · entries needing the server held |
 | 2026-10-01T08:04:02Z | handoff | orchestrator | passed · stage 0 · next bug-historian · orchestrator/handoff.json |
 | 2026-10-01T08:04:05Z | dispatch | bug-historian | stage 1 · regression brief · writes handoff.json |

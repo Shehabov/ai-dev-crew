@@ -2,7 +2,7 @@
 name: ux-writer
 description: Use this agent when any user-visible string is being created, changed, localised or reviewed, in any locale named in PROJECT.md. Trigger it when the tech-architect issues a task brief that touches a screen, when ux-designer needs length budgets before laying out a component, when frontend-engineer or backend-engineer needs button labels, empty states, validation messages, error copy or notification text, and when ux-auditor reports copy that is vague, unlocalisable, or missing the context a number needs. Also invoke it when a string exists in one locale but not another, when a count, rate or date appears in an interface, and when a release is blocked because strings have not been marked for native review.
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-copy

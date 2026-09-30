@@ -81,7 +81,8 @@ You own, under `.devteam/runs/<run-id>/` (or under `DEVTEAM_RUNS_DIR` where that
 `run.json`, `ledger.md`, `orchestrator/plan.md`, `orchestrator/review.md`, your handoff
 files, `orchestrator/report.md`, `evidence/toolchain-preflight.log` and
 `evidence/utilisation/`. You also own the dispatch of every agent, every routing decision,
-and the kickoff edits to `PROJECT.md` (and to `.mcp.json` when a stack pack needs it).
+and the kickoff edits to `PROJECT.md` (and to `.mcp.json` when a stack pack needs it, or to
+`.mcp.json` and `.claude/settings.json` when the Product Lead declines the Playwright server).
 
 A run is done only when every line below is true. Any one false means the run is open.
 
@@ -137,7 +138,15 @@ interview the Product Lead before anything else.
 2. Ask about one section at a time. Say in one line what the section is for and which
    roles read it. Where the section ships a default (the widths and WCAG 2.2 AA in Quality
    bar, `deferred: no target chosen` in Release, no attribution in House rules, `BRAND.md`
-   in Brand), offer the default and ask the Product Lead to confirm or change it.
+   in Brand), offer the default and ask the Product Lead to confirm or change it. In
+   Toolchain, say that the root `.mcp.json` declares the Playwright MCP server for
+   qc-engineer and qc-lead, and ask whether the project keeps it. On a yes, list it as
+   present. On a no, ask before removing its entry from `.mcp.json` and `playwright` from
+   `enabledMcpjsonServers` in `.claude/settings.json`, and leave it out of the section.
+   Remove the two together and change nothing else, the permission rules and the
+   `.playwright-mcp/` line in `.gitignore` included: `scripts/check.mjs` reads both gone as
+   a decline and passes it, fails on one without the other, and still requires the five
+   permission rules the server depends on, and that line.
 3. Write the answer into that section in place of the marker, then read it back. Never
    rename, reorder or merge a heading, because every agent finds its facts by the heading.
    `none` is a valid answer in Commands and Stack pack. Never fill a section with a guess.
@@ -148,13 +157,14 @@ interview the Product Lead before anything else.
    that matches the Stack section, or `none`. Where a pack is chosen, offer its command set
    as the default for Commands.
 6. When the Stack pack section names a pack, run the setup section of that pack's
-   `SKILL.md`. For `stack-nextjs-supabase` that means copying
-   `.claude/skills/stack-nextjs-supabase/templates/mcp.json` to `.mcp.json` at the project
-   root (or adding its server entry to an existing `.mcp.json` without removing any other
-   server), replacing `<project-ref>` with the project ref the Product Lead gives you, and
-   putting no key or token in the file. Then tell the Product Lead to authorise the server
-   with `/mcp`, and that the server loads in the next session. Ask before you install
-   anything a pack's setup section lists.
+   `SKILL.md`. For `stack-nextjs-supabase` that means adding the `supabase` entry from
+   `.claude/skills/stack-nextjs-supabase/templates/mcp.json` to the root `.mcp.json`, beside
+   the team's `playwright` entry, creating the file from the template only when there is
+   none and never replacing it or changing another server's entry, replacing
+   `<project-ref>` with the project ref the Product Lead gives you, and putting no key or
+   token in the file. Then tell the Product Lead to authorise the server with `/mcp`, and
+   that the server loads in the next session. Ask before you install anything a pack's
+   setup section lists.
 7. Search `PROJECT.md` for `TODO:` once more. Only when none remain outside the worked
    example do you open the run, and your first ledger lines record `run opened` and then a
    `kickoff` line naming the sections filled in this session.
@@ -181,6 +191,10 @@ Run it at run open, after the `run opened` ledger line and before the first disp
 
 - `git --version` and `node --version`. These are the core and always checked.
 - Every tool `PROJECT.md § Toolchain` lists as present, by its version command.
+- The Playwright MCP server, when `PROJECT.md § Toolchain` lists it, by `claude mcp list`
+  from the project root. It answers when its `playwright:` line ends `Connected`.
+  `Pending approval`, `Failed` or no line at all is a server that does not answer. The
+  command makes no call through the server, and you never call a Playwright tool.
 - Whatever the pre-flight section of the stack pack named in `PROJECT.md § Stack pack`
   asks for, read from `.claude/skills/<pack>/SKILL.md`. That section is the authority for
   its own checks. For `stack-nextjs-supabase` it is Pre-flight at run open: `npm --version`,
@@ -201,10 +215,13 @@ handoff and add a `toolchain pre-flight` line to the ledger.
 | An MCP server does not answer (its tools are missing, or the call returns an auth error) | Record `<server> MCP not authorised` in the ledger and in your stage 0 handoff's `blockers`, with `needs` set to `product-lead`, and escalate to the Product Lead, who authorises it with `/mcp`. Dispatch no stage that needs the server until a re-run of the check answers. Still dispatch every stage that does not. |
 
 Decide at planning time which plan entries need which server, and write that list in
-`orchestrator/plan.md`. An agent that finds a server missing mid-run runs whatever offline
-proof its stack pack defines and hands off `blocked` with the same reason, and you route it
-to the Product Lead the same way. A missing tool is reported as blocked, never faked, and you
-never accept a result in place of a tool that did not run.
+`orchestrator/plan.md`. No entry needs the Playwright MCP server to pass, because gate
+evidence comes from the suite, so a Playwright server that does not answer is escalated and
+holds nothing, and qc-engineer and qc-lead name the cases that needed it
+(`team-test-protocol`, When the MCP does not answer). An agent that finds a server missing
+mid-run runs whatever offline proof its stack pack defines and hands off `blocked` with the
+same reason, and you route it to the Product Lead the same way. A missing tool is reported
+as blocked, never faked, and you never accept a result in place of a tool that did not run.
 
 #### The run plan
 

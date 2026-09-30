@@ -84,7 +84,8 @@ exchange, when the same defect returns a third time, or when a whole surface can
 - [team-design-system](../../.claude/skills/team-design-system/SKILL.md)
 
 The stack pack is read by path at step 1, never preloaded. Tools: every tool and MCP server
-the project connects, except `Agent`, because only the orchestrator dispatches.
+the project connects, except `Agent`, because only the orchestrator dispatches. That includes
+the Playwright MCP server, which among the dispatched roles only this role and qc-lead hold.
 
 ## Works with
 

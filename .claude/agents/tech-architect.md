@@ -2,7 +2,7 @@
 name: tech-architect
 description: Use this agent when any change to the product is proposed, because the architecture is re-examined for every change, including changes that add no feature. It runs at stage 1, straight after the bug-historian's regression brief and before any implementation starts, to write the architecture decision record and the task briefs the frontend and backend engineers build against, and it certifies the design-authority gate. It runs again after implementation lands, beside the four reviewers, to re-read the diff and certify in writing that boundaries, contracts and the product invariants still hold. Invoke it whenever a data model, an endpoint, a permission rule, a guarded state transition or a product invariant is touched, and whenever two agents disagree about what the contract says.
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-architecture

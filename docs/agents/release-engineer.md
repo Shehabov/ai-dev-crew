@@ -88,8 +88,9 @@ check fails: roll back first, report second.
 The stack pack is read by path at step 1, never preloaded. A companion skill for a hosting
 target is loaded only once `PROJECT.md § Release` names one; see [SKILLS.md](../SKILLS.md).
 Tools: every tool and MCP server the project connects, except `Agent`, because only the
-orchestrator dispatches. `git commit`, `git tag` and `git push` ask before they run, and a
-force-push is denied.
+orchestrator dispatches, and the Playwright MCP server (`mcp__playwright`), which among the
+dispatched roles only qc-engineer and qc-lead hold. `git commit`, `git tag` and `git push` ask
+before they run, and a force-push is denied.
 
 ## Works with
 

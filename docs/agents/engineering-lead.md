@@ -82,7 +82,8 @@ never from the run being late.
   that are code rules.
 
 Tools: every tool and MCP server the project connects, except `Agent`, because only the
-orchestrator dispatches.
+orchestrator dispatches, and the Playwright MCP server (`mcp__playwright`), which among the
+dispatched roles only qc-engineer and qc-lead hold.
 
 ## Works with
 

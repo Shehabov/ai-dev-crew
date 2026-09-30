@@ -88,11 +88,11 @@ Each reads the named pack by path, at `.claude/skills/<pack>/SKILL.md`, at step 
 preloads a pack, so a project on another stack never carries the wrong one.
 
 With `none`, the gates do not relax: every role still needs evidence, and it takes that
-evidence from the commands you gave. The pre-flight checks git, node and every tool
-`§ Toolchain` lists as present. There is no offline database proof unless `§ Commands` names
-a `db test` command, and security-analyst runs its access probes against a build started with
-the `dev` command. The more precise your Commands and Toolchain sections, the more the team
-can prove.
+evidence from the commands you gave. The pre-flight checks git, node, every tool
+`§ Toolchain` lists as present, and the Playwright MCP server when that section lists it.
+There is no offline database proof unless `§ Commands` names a `db test` command, and
+security-analyst runs its access probes against a build started with the `dev` command. The
+more precise your Commands and Toolchain sections, the more the team can prove.
 
 To switch packs on a project that is already running, put a `TODO:` back in
 `§ Stack pack`. At the next kickoff the orchestrator asks which pack applies and runs its
@@ -138,7 +138,9 @@ A few things make a pack work in practice.
   SR-09 in [BUGS.md](../BUGS.md).
 - If the pack talks to an MCP server, ship a config template with a placeholder for the
   project id and no secret in it, as the default pack does with
-  [templates/mcp.json](../.claude/skills/stack-nextjs-supabase/templates/mcp.json).
+  [templates/mcp.json](../.claude/skills/stack-nextjs-supabase/templates/mcp.json). Kickoff
+  adds its entry to the root `.mcp.json` by server name, beside the team's `playwright`
+  entry, and never replaces the file.
 - Add the pack's tools to `§ Toolchain` as present, and their permission rules to
   `.claude/settings.json`.
 
@@ -153,13 +155,22 @@ No agent carries a `tools` list, and that is deliberate.
 | Agent | Tool policy | What reaches it |
 |---|---|---|
 | [orchestrator](agents/orchestrator.md) | No `tools` field and no `disallowedTools` | Every tool the session has, including the Agent tool and every MCP server |
-| The four reviewers: [peer-reviewer](agents/peer-reviewer.md), [code-analyst](agents/code-analyst.md), [code-steward](agents/code-steward.md), [security-analyst](agents/security-analyst.md) | `disallowedTools: Agent, Edit, NotebookEdit` | Every tool except dispatching and editing. They write their findings under the run folder and never edit the code they review. |
-| Every other agent | `disallowedTools: Agent` | Every tool except dispatching, including every MCP server |
+| The two QA roles: [qc-engineer](agents/qc-engineer.md), [qc-lead](agents/qc-lead.md) | `disallowedTools: Agent` | Every tool except dispatching, including every MCP server and the shipped Playwright server |
+| The four reviewers: [peer-reviewer](agents/peer-reviewer.md), [code-analyst](agents/code-analyst.md), [code-steward](agents/code-steward.md), [security-analyst](agents/security-analyst.md) | `disallowedTools: Agent, Edit, NotebookEdit, mcp__playwright` | Every tool except dispatching, editing and the Playwright server. They write their findings under the run folder and never edit the code they review. |
+| Every other agent | `disallowedTools: Agent, mcp__playwright` | Every tool except dispatching and the Playwright server, including every other MCP server |
 
 So a server you connect, in the project's `.mcp.json` or in your own Claude Code
 configuration, reaches every role that could use it without an agent file changing. A
-database server reaches the builders and the probes, a browser server reaches the testers,
-and a design server reaches the design roles.
+database server reaches the builders and the probes, and a design server reaches the design
+roles.
+
+The Playwright server in the shipped `.mcp.json` is the one exception. It reads pages, and
+page text is untrusted input, so qc-engineer and qc-lead are the only dispatched roles that
+hold it, and every agent but those two and the orchestrator disallows it by name.
+`disallowedTools` narrows dispatched roles only: the main thread and any built-in agent still
+inherit it, so the permission rules below are the control, as
+[team-test-protocol](../.claude/skills/team-test-protocol/SKILL.md) (The MCP session) sets
+out.
 
 What a role does with a server is set by its charter and the stack pack rather than by its
 tool list. The orchestrator's only MCP call is one read at pre-flight. The reviewers read and
@@ -184,9 +195,9 @@ checks it and roles may rely on it, and give its tools permission rules as below
 
 | List | What the shipped file puts there, in short |
 |---|---|
-| `allow` | Reading and searching, writing under `.devteam/`, the common git reads, `git add` and `git stash`, npm installs and scripts, `npx` for TypeScript, Next.js, Vitest, Playwright and the app scaffold, the team's scripts, and the Supabase MCP tools that read, prove and apply |
-| `ask` | `git commit`, `git push`, `git tag`, `gh pr`, `gh release`, `npm publish`, and the Supabase MCP tools that cost money or change the project's setup |
-| `deny` | Force pushes, `git reset --hard`, `git clean -fd`, `rm -rf`, and reading `.env`, `.env.local`, `.env.*.local` and `secrets/` folders anywhere in the tree. `.env.example` stays readable, because release-engineer and security-analyst check it. |
+| `allow` | Reading and searching, writing under `.devteam/`, the common git reads, `git add` and `git stash`, npm installs and scripts, `npx` for TypeScript, Next.js, Vitest, Playwright and the app scaffold, the team's scripts, `claude mcp list` for the pre-flight, the Supabase MCP tools that read, prove and apply, and the Playwright MCP server's tools |
+| `ask` | `git commit`, `git push`, `git tag`, `gh pr`, `gh release`, `npm publish`, the Supabase MCP tools that cost money or change the project's setup, the two Playwright tools that hand a file to a page (`browser_file_upload`, `browser_drop`), and any edit under `.devteam/bin/`, whose scripts run without a prompt |
+| `deny` | Force pushes, `git reset --hard`, `git clean -fd`, `rm -rf`, reading `.env`, `.env.local`, `.env.*.local` and `secrets/` folders anywhere in the tree, the Playwright tool that runs code in the server's own process (`browser_run_code_unsafe`), and reading Claude Code's credential store (`Read(~/.claude/.credentials.json)`): it holds the sign-in and the MCP servers' OAuth tokens, and a page the browser reads can ask an agent for them. `.env.example` stays readable, because release-engineer and security-analyst check it. |
 
 Change them to match your stack. A project whose Toolchain lists pnpm adds rules such as
 `Bash(pnpm run:*)`. A new MCP server's read tools usually belong in `allow`, and anything
@@ -195,8 +206,10 @@ the deny list as it is, because they are the last point at which you see what le
 machine. Rules for your machine alone go in `.claude/settings.local.json`, which is personal
 to you and is not committed.
 
-The same file sets `DEVTEAM_RUNS_DIR`, the folder runs are written to, and
-`"agent": "orchestrator"`, which makes the orchestrator the main thread.
+The same file sets `DEVTEAM_RUNS_DIR`, the folder runs are written to,
+`"agent": "orchestrator"`, which makes the orchestrator the main thread, and
+`enabledMcpjsonServers`, which approves the shipped `playwright` server once the folder is
+trusted.
 
 ## Models
 
@@ -219,12 +232,13 @@ Change the roster only for a role your product always needs, or never will.
 
 1. Write `.claude/agents/<name>.md`. The frontmatter has `name` equal to the file name, a
    `description` that says when to invoke it, `model: inherit`, no `tools` field,
-   `disallowedTools: Agent` (plus `Edit, NotebookEdit` if it reviews code it must not
-   change), and `skills:` as a YAML list that starts with `team-protocol` and names only
-   skills that exist under `.claude/skills/`, never a stack pack. Give the body the shape
-   the other agents have: its authority, what it owns and its definition of done, its inputs
-   and outputs, the five-step loop for its role, its gate if it has one, when it escalates,
-   and its hard rules. Its run artefacts go under `.devteam/runs/<run-id>/<name>/`.
+   `disallowedTools: Agent, mcp__playwright` (plus `Edit, NotebookEdit` if it reviews code
+   it must not change, and without `mcp__playwright` only if it tests in a browser the way
+   the QA roles do), and `skills:` as a YAML list that starts with `team-protocol` and
+   names only skills that exist under `.claude/skills/`, never a stack pack. Give the body
+   the shape the other agents have: its authority, what it owns and its definition of done,
+   its inputs and outputs, the five-step loop for its role, its gate if it has one, when it
+   escalates, and its hard rules. Its run artefacts go under `.devteam/runs/<run-id>/<name>/`.
 2. Add its entry to the run plan template: stage, agent, task, consumes, produces and
    `blocked_by`. The template is a JSON block that appears in both
    [orchestrator.md](../.claude/agents/orchestrator.md) and

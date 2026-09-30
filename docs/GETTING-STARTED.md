@@ -13,7 +13,19 @@ first run. It assumes you have used Claude Code before. The team's operating man
 | node | 20 or later. The run machinery and the installer use only node's standard library. |
 
 That is the whole core. The team never relies on a tool it has not been told about, and
-`PROJECT.md § Toolchain` is where you tell it.
+`PROJECT.md § Toolchain` is where you tell it. The Playwright MCP server (`playwright` in
+`.mcp.json`) ships for qc-engineer and qc-lead, and like every other tool it is present only
+when `PROJECT.md § Toolchain` lists it. It starts with `npx`, which comes with node, and
+drives Google Chrome. Kickoff asks whether you keep it.
+
+Until you trust the folder, Claude Code ignores the project's `allow` rules and does not start
+its servers, and `claude mcp list` shows the server as `Pending approval`. Its `deny` rules
+still apply. Trust the folder when Claude Code asks, the first time you run `claude` in it,
+and approve the `playwright` server if it asks about that too. The shipped settings list the
+server in `enabledMcpjsonServers`, so trusting the folder approves it, and it starts in that
+first session, before kickoff has asked whether you keep it: a node process that `npx` fetches
+at the pinned version. If you decline it at kickoff, the orchestrator removes its entry and
+its approval together, and nothing else, so `scripts/check.mjs` still passes.
 
 The default stack pack, [stack-nextjs-supabase](../.claude/skills/stack-nextjs-supabase/SKILL.md),
 adds two things if you choose it at kickoff. The first is `@electric-sql/pglite`, a
@@ -49,6 +61,7 @@ this repository. The team needs these:
 |---|---|
 | `.claude/` | The sixteen agents, the house skills, the stack pack and the settings |
 | `.devteam/` | The run machinery: templates, the gate sync and the utilisation check |
+| `.mcp.json` | The MCP servers: the team's `playwright` server for qc-engineer and qc-lead, which kickoff keeps or removes, and any server a stack pack adds. The file stays either way. |
 | `CLAUDE.md`, `PROJECT.md`, `BUGS.md` | The operating manual, the project profile and the defect register |
 | `templates/BRAND.md` | The brand spec template the design roles draft from |
 | `docs/SKILLS.md` | The agents cite it for the companion skills they may use |
@@ -59,7 +72,7 @@ These are yours to keep or remove:
 |---|---|
 | `README.md`, `assets/`, and `docs/` apart from `docs/SKILLS.md` | They describe the team. Replace the README with your product's own. |
 | `scripts/install.mjs` | Only needed to install the team into another project |
-| `scripts/check.mjs`, `scripts/assets/`, `.github/workflows/check.yml` | This repository's own checks and art. The check tests this repository's layout, so if you remove the files it checks, remove the workflow too. |
+| `scripts/check.mjs`, `scripts/assets/`, `.github/workflows/check.yml` | This repository's own checks and art. The check tests this repository's layout, so if you remove the files it checks, remove the workflow too. Declining the Playwright server at kickoff keeps it passing: once the server's `.mcp.json` entry and its `enabledMcpjsonServers` item are both gone, it skips the checks on the server itself, and it still requires the five permission rules the server depends on and the `.playwright-mcp/` ignore line, which the decline leaves in place. |
 | `LICENSE`, `SECURITY.md` | The team's MIT licence and its vulnerability policy. If your product takes another licence, keep the team's notice with the team's files, as the MIT licence asks. |
 
 Make your first commit, then go to [The first session](#the-first-session).
@@ -87,8 +100,8 @@ Usage: node scripts/install.mjs <target-dir> [--dry-run] [--force]
   <target-dir>  an existing project folder to install the team into
   --dry-run     report what would happen and write nothing
   --force       replace team files that differ from this checkout's copy
-                (never PROJECT.md, BUGS.md, LICENSE-devteam or the target's own
-                settings.json)
+                (never PROJECT.md, BUGS.md, LICENSE-devteam, or the target's own
+                settings.json or .mcp.json)
 ```
 
 What it does with each kind of file:
@@ -99,8 +112,9 @@ What it does with each kind of file:
 | `PROJECT.md`, `BUGS.md` | Copied | Never replaced, even with `--force`. Once kickoff has run they hold your answers and your defect history. |
 | `CLAUDE.md` | Copied | Your own is left alone, and the team's manual is written beside it as `CLAUDE.devteam.md`. A `CLAUDE.md` that is an earlier copy of the team's manual is treated as a team file. |
 | `.claude/settings.json` | Copied | Never modified, because it holds your permission rules. The team's settings are written beside it as `.claude/settings.devteam.json`. |
+| `.mcp.json` | Copied | Never modified, even with `--force`, because it holds your MCP servers. When it lacks a team server, or starts one another way, the team's file is written beside it as `.mcp.devteam.json`. |
 | `LICENSE` | Copied as `LICENSE-devteam` | Never replaced, even with `--force`. Your own `LICENSE` is never touched. |
-| `.gitignore` | Created with `.devteam/runs/` | `.devteam/runs/` is appended, unless a line already covers it |
+| `.gitignore` | Created with `.devteam/runs/` and `.playwright-mcp/` | Each is appended, unless a line already covers it |
 
 The team is MIT licensed, and the licence asks that its notice stays with copies of the
 files, which is why `LICENSE-devteam` travels with them. The installer copies nothing else:
@@ -128,11 +142,21 @@ The installer prints what to merge from `.claude/settings.devteam.json` into you
 
 - `"agent": "orchestrator"`, so the orchestrator is the main thread
 - `"DEVTEAM_RUNS_DIR": ".devteam/runs"` under `"env"`
+- `"playwright"` in `"enabledMcpjsonServers"`, which approves the team's Playwright server
+  once you trust the folder
 - the team's rules under `permissions.allow`, `permissions.ask` and `permissions.deny`
 
 It also names any rule your own `allow` list grants that the team asks about or denies, so
 you can decide whether to keep it. Until the `agent` line is merged, start sessions with
 `claude --agent orchestrator`.
+
+### When your project has its own .mcp.json
+
+The installer leaves it as it is and compares the team's servers with it by name. For each
+one your file lacks, and each one it starts with another command or other arguments, it
+prints a line, and the team's file is written beside yours as `.mcp.devteam.json` to copy the
+entry from. The team pins its `playwright` server to an exact version and launches it with
+`--no-webmcp`, so an entry of your own that differs is worth reading before you keep it.
 
 ## The first session
 
@@ -153,11 +177,17 @@ decision that belongs to you. In the team's files you are the **Product Lead**: 
 person who can change scope, accept a release or overrule a gate.
 
 The shipped settings allow reading, writing under `.devteam/`, the common git reads, npm
-scripts and the team's own scripts. Commits, tags and pushes ask you first, and so does any
-Supabase MCP tool that costs money or changes the project's setup. Force pushes, hard
-resets, `rm -rf` and reading `.env`, `.env.local` and `.env.*.local` files are denied;
-`.env.example` stays readable. [CUSTOMISING.md](CUSTOMISING.md#permissions)
-covers changing them.
+scripts and the team's own scripts. Commits, tags and pushes ask you first, and so do any
+Supabase MCP tool that costs money or changes the project's setup and the two Playwright
+tools that hand a file to a page, `browser_file_upload` and `browser_drop`. Force pushes,
+hard resets, `rm -rf`, reading `.env`, `.env.local` and `.env.*.local` files, reading Claude
+Code's credential store, `~/.claude/.credentials.json`, and the Playwright tool that runs
+code in the server's own process, `browser_run_code_unsafe`, are denied; `.env.example`
+stays readable. That deny on the store covers Claude Code's Read tool and the plain shell
+reads that name the file, such as `cat` or `head`, not every command that could reach it.
+These are a selection. The full list is `.claude/settings.json` itself, and the Permissions
+table in [CUSTOMISING.md](CUSTOMISING.md#permissions) sums it up, gives the reason for the
+rules that need one, and covers changing them.
 
 ## Kickoff
 
@@ -204,12 +234,12 @@ When you name `stack-nextjs-supabase`, kickoff runs the pack's setup, as its
 [Kickoff setup section](../.claude/skills/stack-nextjs-supabase/SKILL.md#kickoff-setup)
 describes:
 
-1. The MCP server. The orchestrator copies the pack's
-   [mcp.json template](../.claude/skills/stack-nextjs-supabase/templates/mcp.json) to
-   `.mcp.json` at the project root, or adds its `supabase` entry to an existing `.mcp.json`
-   without removing any other server. It asks you for the project ref, the short id in your
-   Supabase project's dashboard URL, and writes it in place of `<project-ref>`. The file
-   holds no key and no token.
+1. The MCP server. The orchestrator adds the `supabase` entry from the pack's
+   [mcp.json template](../.claude/skills/stack-nextjs-supabase/templates/mcp.json) to the
+   root `.mcp.json`, beside the team's `playwright` entry. It creates the file from the
+   template only when there is none, and never replaces it or changes another server's
+   entry. It asks you for the project ref, the short id in your Supabase project's dashboard
+   URL, and writes it in place of `<project-ref>`. The file holds no key and no token.
 2. The offline proof. With your approval, it installs PGlite at the project root, creating
    a private `package.json` first if there is none:
 
@@ -395,6 +425,11 @@ stack pack defines and never fakes the rest.
 Run `/mcp` and sign in. If `supabase` is not listed at all, check that `.mcp.json` is at the
 project root, then quit and start the session again. Then ask the orchestrator to re-run the
 pre-flight. It dispatches the held stages once the check answers.
+
+For the Playwright server the pre-flight line reads `claude mcp list` and
+`playwright MCP not authorised`, usually because the folder is not trusted yet and the server
+shows as `Pending approval`. Trust the folder and start a new session, so the tools load. No
+stage waits for it, because the test evidence comes from the suite.
 
 ### A rejection loop reaches three
 

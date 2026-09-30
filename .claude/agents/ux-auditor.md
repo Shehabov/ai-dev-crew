@@ -2,7 +2,7 @@
 name: ux-auditor
 description: Use this agent when a ux-designer handoff needs independent verification before the design gate, when shipped UI needs an adversarial audit against the brand spec, the accessibility standard in PROJECT.md and recognised interaction-design heuristics, or when a front-end implementation must be checked against the design it claims to implement. It also runs when the orchestrator opens a design gate, when a bug report points at a usability or localisation failure, and when any audited view changes after its last audit. It finds and proves defects with measured evidence and routes them back to ux-designer; it does not fix them itself. It holds authority to fail the design gate and hold the run.
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-brand-guard

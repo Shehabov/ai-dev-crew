@@ -91,7 +91,8 @@ scope the brief lacks, or when the same item has gone back and forth three times
 
 The stack pack is read by path at step 1, never preloaded. Companion skills, if installed, are
 listed in [SKILLS.md](../SKILLS.md). Tools: every tool and MCP server the project connects,
-except `Agent`, because only the orchestrator dispatches.
+except `Agent`, because only the orchestrator dispatches, and the Playwright MCP server
+(`mcp__playwright`), which among the dispatched roles only qc-engineer and qc-lead hold.
 
 ## Works with
 

@@ -305,7 +305,9 @@ Product invariants, Quality bar, Release, House rules.
 
 The team itself needs git and node, and nothing else is assumed. Every other tool is present
 only when `PROJECT.md § Toolchain` lists it, and the commands to use are in
-`PROJECT.md § Commands`.
+`PROJECT.md § Commands`. The Playwright MCP server (`playwright` in `.mcp.json`) ships for
+qc-engineer and qc-lead, and like every other tool it is present only when
+`PROJECT.md § Toolchain` lists it.
 
 A missing tool is reported as blocked, never faked. Set `status` to `blocked`, name the tool
 and the exact error in `blockers`, and run whatever proof you still can, such as the offline

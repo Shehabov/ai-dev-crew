@@ -82,8 +82,9 @@ severity.
 - [team-architecture](../../.claude/skills/team-architecture/SKILL.md), to check module
   headers against the invariants a module really upholds, and names against the domain model.
 
-Tools: everything except Agent, Edit and NotebookEdit, so it can read, run scans and write its
-own findings, but never rewrites the author's code and never dispatches another agent.
+Tools: everything except Agent, Edit, NotebookEdit and the Playwright MCP server
+(`mcp__playwright`), so it can read, run scans and write its own findings, but never rewrites
+the author's code and never dispatches another agent.
 
 ## Works with
 

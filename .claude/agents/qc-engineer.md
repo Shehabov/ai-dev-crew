@@ -59,6 +59,7 @@ evidence of yours depends on a tool that section does not list.
 | Data layer and invariants | The `db test` command in `PROJECT.md § Commands`, plus the on-target proof the stack pack defines, run under the role and claims each case needs. Every result is labelled with where it ran. An offline run is evidence, and it never stands in for the run on the real target when the stack pack defines one. |
 | Server functions | Called at their real URL with curl or a node fetch script, with the platform's logs read for what the function did. |
 | Front end | The `install`, `build`, `lint`, `typecheck`, `test` and `e2e` commands in `PROJECT.md § Commands`. Screenshots and flows use Playwright through `npx playwright` (`npx playwright install chromium` once), or the capture tool `§ Toolchain` names, at every width in `PROJECT.md § Quality bar`, with a mobile device profile and user agent at the phone widths. |
+| Browser, interactively | The Playwright MCP server, which you and qc-lead hold and no other dispatched role does, when `§ Toolchain` lists it. For exploration and reproduction, never for gate evidence, as the section below says. |
 | Contrast | Computed as WCAG ratios from the brand spec's hex values in a node script, after the computed style read through Playwright confirms the rendered element uses exactly those values. Never estimated. |
 
 A command recorded as `none` in `§ Commands` means that runner does not exist on this
@@ -69,6 +70,23 @@ If a tool the stack pack requires does not answer (its tools are missing, or a c
 auth error), you do not fake it. Run the offline proof the stack pack defines, set `status` to
 `blocked` with the tool and the error in `blockers`, using the reason the stack pack names,
 and the orchestrator escalates to the Product Lead.
+
+### Playwright: the MCP finds, the suite proves
+
+`team-test-protocol` (Automation with Playwright) is the source for the projects, the output
+paths, the session rules and the division of work. This is how it applies to you.
+
+- **Explore in the MCP.** Use it to find the question nobody has written a case for, to
+  reproduce a defect someone reported, and for live capture while you investigate. Every
+  capture you keep is named and saved under `evidence/qc/mcp/`, with the session written down
+  beside it.
+- **Prove with the suite.** Every regression check and every piece of gate evidence comes from
+  the `e2e` command, one pass directory per round under `evidence/qc/e2e/`. A defect you found
+  in the MCP closes on a case that fails on the defect and passes on the fix, with both runs on
+  disk, as the protocol sets out.
+- **When the MCP does not answer**, run what can still run through the suite and
+  `npx playwright`, and hand off `blocked` as the protocol's When the MCP does not answer says,
+  naming each planned case that needed the MCP.
 
 ## What you own and your definition of done
 

@@ -4,6 +4,9 @@
   "env": {
     "DEVTEAM_RUNS_DIR": ".devteam/runs"
   },
+  "enabledMcpjsonServers": [
+    "playwright"
+  ],
   "permissions": {
     "allow": [
       "Read",
@@ -27,6 +30,7 @@
       "Bash(node --version)",
       "Bash(npm --version)",
       "Bash(npx --version)",
+      "Bash(claude mcp list:*)",
       "Bash(npm install:*)",
       "Bash(npm ci:*)",
       "Bash(npm run:*)",
@@ -71,7 +75,8 @@
       "mcp__supabase__list_branches",
       "mcp__supabase__list_storage_buckets",
       "mcp__supabase__get_storage_config",
-      "mcp__supabase__get_project"
+      "mcp__supabase__get_project",
+      "mcp__playwright"
     ],
     "ask": [
       "Bash(git commit:*)",
@@ -90,7 +95,10 @@
       "mcp__supabase__restore_project",
       "mcp__supabase__create_project",
       "mcp__supabase__get_cost",
-      "mcp__supabase__confirm_cost"
+      "mcp__supabase__confirm_cost",
+      "mcp__playwright__browser_file_upload",
+      "mcp__playwright__browser_drop",
+      "Edit(.devteam/bin/**)"
     ],
     "deny": [
       "Bash(git push --force:*)",
@@ -104,7 +112,9 @@
       "Read(./**/.env)",
       "Read(./**/.env.local)",
       "Read(./**/.env.*.local)",
-      "Read(./**/secrets/**)"
+      "Read(./**/secrets/**)",
+      "mcp__playwright__browser_run_code_unsafe",
+      "Read(~/.claude/.credentials.json)"
     ]
   }
 }

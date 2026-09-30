@@ -2,7 +2,7 @@
 name: ux-designer
 description: Use this agent when a surface needs to be designed or redesigned before anyone writes code, when the tech-architect has issued a frontend task brief that implies a new screen, state, flow or component, when the ux-auditor has returned findings that must be fixed, when a surface needs its phone view, right-to-left behaviour, themes or state coverage specified, or when a change to permissions, data or a product invariant alters what a user sees. It also runs when no approved brand spec exists, to draft one for the Product Lead to approve. It produces the per-surface design spec, the token trace back to the brand spec, and the string slot list the ux-writer works from. It does not write final copy, does not implement, and does not certify its own work clean.
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-brand-guard

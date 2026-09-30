@@ -12,7 +12,9 @@ it cannot take for you is signing in to an MCP server, if your stack uses one.
 ## Start
 
 The core needs Claude Code, git and node 20 or later. Nothing else is assumed until you say
-it is there.
+it is there. The Playwright MCP server (`playwright` in `.mcp.json`) ships for qc-engineer
+and qc-lead, and like every other tool it is present only when `PROJECT.md § Toolchain`
+lists it.
 
 ### A new product
 
@@ -205,7 +207,7 @@ The team is a set of plain files, and each change below is an edit to one of the
 | The stack | `PROJECT.md § Stack pack`. [stack-nextjs-supabase](.claude/skills/stack-nextjs-supabase/SKILL.md) ships as the default and is optional. Name your own `stack-*` pack, or `none`, and the roles work from your commands. |
 | Extra craft for a role | Companion skills from third parties. An agent uses one where it is installed and never depends on it. |
 | Models | Every agent ships with `model: inherit`. To pin one role, change that line in its file. |
-| MCP servers | No agent carries a tools list, so a server you connect reaches every role that can use it. |
+| MCP servers | No agent carries a tools list, so a server you connect reaches every role that can use it. The shipped Playwright server is the one exception: qc-engineer and qc-lead are the only dispatched roles that hold it, every agent but those two and the orchestrator lists `mcp__playwright` in its `disallowedTools`, and the permission rules in `.claude/settings.json` are the control. |
 
 [Customising](docs/CUSTOMISING.md) covers each of these, and adding or removing a role.
 [Skills](docs/SKILLS.md) lists every skill, which agents load it, and the companions each
@@ -221,6 +223,7 @@ role can use.
   settings.json                  the orchestrator as main thread, and the permissions
 .devteam/                        run machinery: templates, the gate sync, the utilisation check
 .github/workflows/check.yml      runs scripts/check.mjs on every push and pull request
+.mcp.json                        the team's Playwright MCP server, and any a stack pack adds
 assets/                          the art on this page
 docs/                            a page per agent, the workflow, skills, security, guides
 templates/BRAND.md               the brand spec template

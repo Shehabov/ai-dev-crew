@@ -64,7 +64,9 @@ command.
 
 What is installed on the machine the team runs on, and what is never assumed. The team
 itself needs only git and node. A step that needs a tool not listed as present is reported
-as `blocked`, never faked.
+as `blocked`, never faked. The Playwright MCP server (`playwright` in `.mcp.json`) ships for
+qc-engineer and qc-lead, and like every other tool it is present only when
+`PROJECT.md § Toolchain` lists it.
 
 | | |
 |---|---|
@@ -186,7 +188,7 @@ orchestrator raises them in the session. Nothing waits on email.
 
 | | |
 |---|---|
-| Present | git, node 24, npm, npx, and the Supabase MCP server scoped to one project |
+| Present | git, node 24, npm, npx, the Supabase MCP server scoped to one project, and the Playwright MCP server for qc-engineer and qc-lead |
 | Never assumed | Docker, the Supabase CLI, Deno, the Vercel CLI, pnpm, psql, jq, python |
 
 § Stack pack

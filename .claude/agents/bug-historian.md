@@ -2,7 +2,7 @@
 name: bug-historian
 description: Use this agent at the start of every run, before any other agent plans, to brief the team on defects and agent mistakes already recorded in BUGS.md against the surfaces this change touches. Use it again after the four independent reviews (peer-reviewer, code-analyst, code-steward and security-analyst) to run the regression guard, which checks the diff against every known defect on those surfaces and every binding standing rule, and blocks if one has been repeated. Use it a third time at the end of the run to record every defect and agent mistake raised in the run, with the standing rule each one produces. Also use it when the Product Lead or a quality role raises a defect outside a run. It owns BUGS.md and is the only agent that writes to it.
 model: inherit
-disallowedTools: Agent
+disallowedTools: Agent, mcp__playwright
 skills:
   - team-protocol
   - team-bug-register

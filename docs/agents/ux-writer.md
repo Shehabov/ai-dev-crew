@@ -81,7 +81,9 @@ recommendation.
 - [team-brand-guard](../../.claude/skills/team-brand-guard/SKILL.md)
 
 Companion skills, if installed, are listed in [SKILLS.md](../SKILLS.md). Tools: every tool
-and MCP server the project connects, except `Agent`, because only the orchestrator dispatches.
+and MCP server the project connects, except `Agent`, because only the orchestrator dispatches,
+and the Playwright MCP server (`mcp__playwright`), which among the dispatched roles only
+qc-engineer and qc-lead hold.
 
 ## Works with
 
